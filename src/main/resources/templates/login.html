@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>员工管理系统登录</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .main-body {
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            -webkit-transform: translate(-50%, -50%);
+            -moz-transform: translate(-50%, -50%);
+            -ms-transform: translate(-50%, -50%);
+            -o-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+        }
+
+        .login-main .login-bottom .center .item input {
+            display: inline-block;
+            width: 227px;
+            height: 22px;
+            padding: 0;
+            position: absolute;
+            border: 0;
+            outline: 0;
+            font-size: 14px;
+            letter-spacing: 0;
+        }
+
+        .login-main .login-bottom .center .item .icon-1 {
+            background: url(./images/icon-login.png) no-repeat 1px 0;
+        }
+
+        .login-main .login-bottom .center .item .icon-2 {
+            background: url(./images/icon-login.png) no-repeat -54px 0;
+        }
+
+        .login-main .login-bottom .center .item .icon-3 {
+            background: url(./images/icon-login.png) no-repeat -106px 0;
+        }
+
+        .login-main .login-bottom .center .item .icon-4 {
+            background: url(./images/icon-login.png) no-repeat 0 -43px;
+            position: absolute;
+            right: -10px;
+            cursor: pointer;
+        }
+
+        .login-main .login-bottom .center .item .icon-5 {
+            background: url(./images/icon-login.png) no-repeat -55px -43px;
+        }
+
+        .login-main .login-bottom .center .item .icon-6 {
+            background: url(./images/icon-login.png) no-repeat 0 -93px;
+            position: absolute;
+            right: -10px;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+
+        .login-main .login-bottom .tip .icon-nocheck {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            border: solid 1px #9abcda;
+            position: relative;
+            top: 2px;
+            margin: 1px 8px 1px 1px;
+            cursor: pointer;
+        }
+
+        .login-main .login-bottom .tip .icon-check {
+            margin: 0 7px 0 0;
+            width: 14px;
+            height: 14px;
+            border: none;
+            background: url(./images/icon-login.png) no-repeat -111px -48px;
+        }
+
+        .login-main .login-bottom .center .item .icon {
+            display: inline-block;
+            width: 33px;
+            height: 22px;
+        }
+
+        .login-main .login-bottom .center .item {
+            width: 288px;
+            height: 35px;
+            border-bottom: 1px solid #dae1e6;
+            margin-bottom: 35px;
+        }
+
+        .login-main {
+            width: 428px;
+            position: relative;
+            float: left;
+        }
+
+        .login-main .login-top {
+            height: 117px;
+            background-color: #148be4;
+            border-radius: 12px 12px 0 0;
+            font-family: SourceHanSansCN-Regular;
+            font-size: 30px;
+            font-weight: 400;
+            font-stretch: normal;
+            letter-spacing: 0;
+            color: #fff;
+            line-height: 117px;
+            text-align: center;
+            overflow: hidden;
+            -webkit-transform: rotate(0);
+            -moz-transform: rotate(0);
+            -ms-transform: rotate(0);
+            -o-transform: rotate(0);
+            transform: rotate(0);
+        }
+
+        .login-main .login-top .bg1 {
+            display: inline-block;
+            width: 74px;
+            height: 74px;
+            background: #fff;
+            opacity: .1;
+            border-radius: 0 74px 0 0;
+            position: absolute;
+            left: 0;
+            top: 43px;
+        }
+
+        .login-main .login-top .bg2 {
+            display: inline-block;
+            width: 94px;
+            height: 94px;
+            background: #fff;
+            opacity: .1;
+            border-radius: 50%;
+            position: absolute;
+            right: -16px;
+            top: -16px;
+        }
+
+        .login-main .login-bottom {
+            width: 428px;
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+            padding-bottom: 53px;
+        }
+
+        .login-main .login-bottom .center {
+            width: 288px;
+            margin: 0 auto;
+            padding-top: 40px;
+            padding-bottom: 15px;
+            position: relative;
+        }
+
+        .login-main .login-bottom .tip {
+            clear: both;
+            height: 16px;
+            line-height: 16px;
+            width: 288px;
+            margin: 0 auto;
+        }
+
+        body {
+            background: url(./images/loginbg.png) 0% 0% / cover no-repeat;
+            position: static;
+            font-size: 12px;
+        }
+
+        input::-webkit-input-placeholder {
+            color: #a6aebf;
+        }
+
+        input::-moz-placeholder { /* Mozilla Firefox 19+ */
+            color: #a6aebf;
+        }
+
+        input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            color: #a6aebf;
+        }
+
+        input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+            color: #a6aebf;
+        }
+
+        input:-webkit-autofill { /* 取消Chrome记住密码的背景颜色 */
+            -webkit-box-shadow: 0 0 0 1000px white inset !important;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .login-main .login-bottom .tip {
+            clear: both;
+            height: 16px;
+            line-height: 16px;
+            width: 288px;
+            margin: 0 auto;
+        }
+
+        .login-main .login-bottom .tip .login-tip {
+            font-family: MicrosoftYaHei;
+            font-size: 12px;
+            font-weight: 400;
+            font-stretch: normal;
+            letter-spacing: 0;
+            color: #9abcda;
+            cursor: pointer;
+        }
+
+        .login-main .login-bottom .tip .forget-password {
+            font-stretch: normal;
+            letter-spacing: 0;
+            color: #1391ff;
+            text-decoration: none;
+            position: absolute;
+            right: 62px;
+        }
+
+        .login-main .login-bottom .login-btn {
+            width: 288px;
+            height: 40px;
+            background-color: #1E9FFF;
+            border-radius: 16px;
+            margin: 24px auto 0;
+            text-align: center;
+            line-height: 40px;
+            color: #fff;
+            font-size: 14px;
+            letter-spacing: 0;
+            cursor: pointer;
+            border: none;
+        }
+
+        .login-main .login-bottom .center .item .validateImg {
+            position: absolute;
+            right: 1px;
+            cursor: pointer;
+            height: 36px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .footer {
+            left: 0;
+            bottom: 0;
+            color: #fff;
+            width: 100%;
+            position: absolute;
+            text-align: center;
+            line-height: 30px;
+            padding-bottom: 10px;
+            text-shadow: #000 0.1em 0.1em 0.1em;
+            font-size: 14px;
+        }
+
+        .padding-5 {
+            padding: 5px !important;
+        }
+
+        .footer a, .footer span {
+            color: #fff;
+        }
+
+        @media screen and (max-width: 428px) {
+            .login-main {
+                width: 360px !important;
+            }
+
+            .login-main .login-top {
+                width: 360px !important;
+            }
+
+            .login-main .login-bottom {
+                width: 360px !important;
+            }
+        }
+        .captcha {
+            width: 60%;
+            display: inline-block;
+        }
+
+        /*.captcha-img {*/
+        /*    display: inline-block;*/
+        /*    width: 34%;*/
+        /*    float: right;*/
+        /*}*/
+
+        /*.captcha-img img {*/
+        /*    height: 34px;*/
+        /*    border: 1px solid #e6e6e6;*/
+        /*    height: 36px;*/
+        /*    width: 98%;*/
+        /*}*/
+
+        #captcha {
+            cursor: pointer;
+        }
+
+        /*.forget-password {*/
+        /*    color: blue;*/
+        /*    position: absolute;*/
+        /*    top: 10px;*/
+        /*    right: 0;*/
+        /*    font-size: 12px;*/
+        /*}*/
+
+        .reg{
+            position: relative;
+        }
+
+        .toRegister {
+            font-stretch: normal;
+            letter-spacing: 0;
+            color: #1391ff;
+            text-decoration: none;
+            position: absolute;
+            top: 10px;
+            right: 62px;
+        }
+    </style>
+</head>
+<body>
+<div class="main-body">
+    <div class="login-main">
+        <div class="login-top">
+            <span>员工管理系统登录</span>
+            <span class="bg1"></span>
+            <span class="bg2"></span>
+        </div>
+        <form class="layui-form login-bottom">
+            <div class="center">
+                <div class="item">
+                    <span class="icon icon-2"></span>
+                    <input type="text" id="username" autofocus name="username" lay-verify="required|account"
+                           placeholder="请输入账号"
+                           th:value="${session.username}" autocomplete="off" class="layui-input">
+                </div>
+
+                <div class="item">
+                    <span class="icon icon-3"></span>
+                    <input type="password" th:value="${session.password}" id="password" name="password"
+                           lay-verify="required|password"
+                           placeholder="请输入密码"
+                           autocomplete="off" class="layui-input">
+                    <span class="bind-password icon icon-4"></span>
+                </div>
+
+                <div id="validatePanel" class="item" style="width: 137px;">
+                    <input type="text" name="captcha" lay-verify="captcha" placeholder="图形验证码" autocomplete="off"
+                           class="layui-input verification captcha">
+                        <img class="validateImg"  th:src="@{/captcha}" id="captcha"/>
+                </div>
+
+            </div>
+            <div class="tip">
+                <input type="checkbox" id="remember" name="rememberMe" th:checked="${session.rememberMe}"
+                       value="true" lay-skin="primary" title="记住密码">
+                <a th:href="@{/findPwd}" class="forget-password">忘记密码？</a>
+            </div>
+            <div class="layui-form-item" style="text-align:center; width:100%;height:100%;margin:0px;">
+                <button id="btn-login" class="login-btn layui-btn layui-btn layui-btn-normal layui-btn-fluid" lay-submit=""
+                        lay-filter="login">登 录
+                </button>
+            </div>
+            <div class="reg"><a class="toRegister" th:href="@{/register}">没有账号？点我注册</a></div>
+        </form>
+    </div>
+</div>
+<div class="footer">
+    ©版权所有 2020-2023 陈天赐<span class="padding-5">|</span><a target="_blank" href="javascript:;">赣ICP备16006642号-2</a>
+</div>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/lib/jq-module/jquery.particleground.min.js}" charset="utf-8"></script>
+<script th:inline="javascript">
+    // 获取前面的路径
+    var ctxPath = [[@{/}]];
+    // alert(ctxPath);// /ctc/
+
+        $('.bind-password').on('click', function () {
+            if ($(this).hasClass('icon-5')) {
+                $(this).removeClass('icon-5');
+                $("input[name='password']").attr('type', 'password');
+            } else {
+                $(this).addClass('icon-5');
+                $("input[name='password']").attr('type', 'text');
+            }
+        });
+    //验证码
+    $("#captcha").click(function () {
+        // alert("1")
+        $("#captcha").attr("src", ctxPath + 'captcha?date=' + new Date().getTime());
+    });
+
+
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer;
+
+        // 登录过期的时候，跳出ifram框架
+        if (top.location != self.location) top.location = self.location;
+
+        var i = 5;
+        var maxTime = 60 * 10; //开始锁定十分钟
+        // 进行登录操作
+        form.on('submit(login)', function (data) {
+            //点击登录按钮后禁用
+            $("#btn-login").attr("disabled", "disabled").addClass("layui-btn-disabled");
+            data = data.field;
+            if (data.username == '') {
+                layer.msg('用户名不能为空');
+                return false;
+            }
+            if (data.password == '') {
+                layer.msg('密码不能为空');
+                return false;
+            }
+            if (data.captcha == '') {
+                layer.msg('验证码不能为空');
+                //点击登录按钮失败后取消禁用
+                $("#btn-login").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                return false;
+            }
+            var remember = document.getElementById("remember");
+            if (remember.checked != true) {
+                data.rememberMe = false;
+            }
+            //异步登录请求
+            var url = ctxPath + "user/login";
+            $.post(url, data, function (response) {
+                console.log(response);
+                if (response.code == 0) {
+                    //登录成功
+                    layer.msg(response.message, {icon: 6, time: 2000}, function () {
+                        window.location = ctxPath + 'index';
+                    });
+                } else {
+                    //登录失败 i-1
+                    i--;
+                    //点击登录按钮失败后取消禁用
+                    $("#btn-login").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                    layer.alert(response.message, {icon: 5, anim: 6});
+                    //换一张验证码
+                    $("#captcha").attr("src", ctxPath + 'captcha?date=' + new Date().getTime());
+                    console.log(i);
+
+                    //多次登录失败锁定
+                    if (i < 0) {
+                        layer.msg("您频繁登录错误，该账号已被锁定", {icon: 5, anim: 6, time: 1500});
+                        $("#btn-login").attr("disabled", "disabled").addClass("layui-btn-disabled");
+                        var dv = document.getElementById("btn-login");
+
+                        function jia(a) {
+                            if (a < 10)
+                                return "0" + a;
+                            else
+                                return a;
+                        }
+
+                        var last = function () {
+                            var minutes = Math.floor(maxTime / 60); //怎么说呢  假如(60*10-1)s 正常应该就是的 9.983333  取整就是 9
+                            var seconds = maxTime % 60;   //余数指定是个整数
+                            seconds = jia(seconds);
+                            var mes = "还剩下 " + minutes + " 分 " + seconds + " 秒";
+                            dv.innerHTML = mes;
+                            maxTime--;
+                            if (maxTime <= 0) {
+                                i = 2;
+                                maxTime = 30 * 60;//第二次之后锁定半小时
+                                clearInterval(interval);//关闭定时器
+                                // clearInterval(timeId);
+                                dv.innerHTML = '登 录';
+                                $("#btn-login").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                                return;
+                            }
+                        };
+                        var interval = setInterval(function () {
+                            last();
+                        }, 1000);
+                    }
+                    ;
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

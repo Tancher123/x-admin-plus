@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增员工</title>
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/layuimini.css?v=2.0.4.2}" media="all">
+    <link rel="stylesheet" th:href="@{/css/themes/default.css}" media="all">
+    <link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+    <style>
+        body {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<form class="layui-form" id="form" action="" th:object="${emp}">
+    <input type="hidden" th:field="*{empId}">
+    <div class="layui-form-item">
+        <label class="layui-form-label">员工姓名</label>
+        <div class="layui-input-block">
+            <input type="text" th:field="*{name}" required="required" lay-verify="required" placeholder="请输入员工姓名"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">员工性别</label>
+        <div class="layui-input-block">
+            <input type="radio" th:field="*{sex}" value="0" title="男">
+            <input type="radio" th:field="*{sex}" value="1" title="女">
+        </div>
+    </div>
+<!--    <div class="layui-form-item">-->
+<!--        <label class="layui-form-label">员工年龄</label>-->
+<!--        <div class="layui-input-block">-->
+<!--            <input type="text" th:field="*{age}" required="required" lay-verify="required|number" placeholder="请输入员工年龄"-->
+<!--                   autocomplete="off" class="layui-input">-->
+<!--        </div>-->
+<!--    </div>-->
+    <input type="hidden" name="age">
+    <div class="layui-form-item">
+        <label class="layui-form-label">员工工资</label>
+        <div class="layui-input-block">
+            <input type="text" th:field="*{sal}" required="required" lay-verify="required|number" placeholder="请输入员工工资"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">部门</label>
+        <div class="layui-input-block">
+            <select th:field="*{deptId}" lay-verify="required">
+                <option value="">请选择</option>
+                <option th:each="dept:${deptList}"
+                        th:value="${dept.deptId}"
+                        th:text="${dept.deptName}"
+                ></option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">生日</label>
+        <div class="layui-input-block">
+            <input type="text" th:field="*{birthday}" required="required" lay-verify="required" placeholder="请输入生日"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">家庭地址</label>
+        <div class="layui-input-block">
+            <textarea th:field="*{address}" placeholder="请输入家庭地址" class="layui-textarea"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button id="btn-submit" class="layui-btn" lay-submit lay-filter="btn-submit-filter">修改</button>
+        </div>
+    </div>
+</form>
+
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/ctc/date.js}"></script>
+<script th:inline="javascript">
+    // 获取前面的路径
+    let ctxPath = [[@{/}]];
+        layui.use(['laydate', 'table', 'form'], function () {
+            var laydate = layui.laydate;
+            var table = layui.table;
+            var form = layui.form;
+            var $ = layui.$;
+
+            //日期组件
+            laydate.render({
+                elem: '[name="birthday"]' //指定元素
+            });
+
+            //提交
+            form.on('submit(btn-submit-filter)', function (data) {
+                //点击提交按钮后禁用
+                $("#btn-submit").attr("disabled", "disabled").addClass("layui-btn-disabled");
+                console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+
+                //计算年龄
+                let birthday = data.field.birthday;
+                let year = getDateYearSub(birthday);
+                data.field.age = year;
+                //异步请求提交数据
+                var url = ctxPath + 'emp';
+                data.field._method = "Put";
+                $.post(url, data.field, function (response) {
+                    if (response.code == 0) {
+                        //提交成功,弹出提示框
+                        layer.msg(response.message, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //并且刷新数据表格
+                            parent.location.reload();
+                            //关闭窗口
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                        });
+                    } else {
+                        //点击修改按钮失败后取消禁用
+                        $("#btn-submit").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                        //失败则提示错误信息，窗口不关闭
+                        layer.alert(response.message, {
+                            icon: 2,
+                            anim: 6,
+                            title: '操作失败',
+                        }, function (index) {
+                            layer.close(index);
+                        });
+                    }
+
+                });
+                return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+            });
+        });
+</script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>基本资料</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <style>
+        .layui-form-item .layui-input-company {
+            width: auto;
+            padding-right: 10px;
+            line-height: 38px;
+        }
+    </style>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+
+            <div class="layui-form layuimini-form">
+                <input type="hidden" name="id" th:value="${session.userId}">
+                <div class="layui-form-item">
+                    <label class="layui-form-label required">昵称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="pickName" lay-verify="pickName" placeholder="请输入昵称" value=""
+                               class="layui-input">
+                        <tip>填写昵称</tip>
+                    </div>
+                </div><div class="layui-form-item">
+                <label class="layui-form-label required">姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" lay-verify="username" placeholder="请输入姓名" value=""
+                           class="layui-input">
+                    <tip>填写真实姓名</tip>
+                </div>
+            </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label required">身份证</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="identity|required" lay-reqtext="身份证不能为空"
+                               placeholder="请输入身份证" name="card" class="layui-input">
+                        <tip>填写用户身份证</tip>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="sex" value="0" title="男"/>
+                        <input type="radio" name="sex" value="1" title="女" checked/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label required">手机号码</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="required|phone|number" lay-reqtext="手机号码不能为空"
+                               placeholder="请输入手机号码" name="number" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">年龄</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="required" min="0" max="120" placeholder="请输入年龄"
+                               autocomplete="off" name="age" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-block">
+                        <input type="text" lay-verify="required|email" placeholder="请输入邮箱"
+                               autocomplete="off" name="email" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">职业</label>
+                    <div class="layui-input-block">
+                        <select name="proId" lay-verify="required">
+                            <option value="">请选择</option>
+                            <option th:each="pro:${proList}"
+                                    th:value="${pro.proId}"
+                                    th:text="${pro.proName}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" id="btn-submit" lay-submit lay-filter="saveBtn">保存信息</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/js/lay-config.js?v=1.0.4}" charset="utf-8"></script>
+<script th:inline="javascript">
+    // 获取前面的路径
+    var ctxPath = [[@{/}]];
+    layer.alert([[${msg}]], {icon: 5,anim:2});
+
+    layui.use(['form', 'miniTab'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            miniTab = layui.miniTab;
+        var $ = layui.$;
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            //点击提交按钮后禁用
+            $("#btn-submit").attr("disabled", "disabled").addClass("layui-btn-disabled");
+            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+            //异步请求提交数据
+            var url = ctxPath + 'user/account';
+            data.field._method = 'put';
+            $.post(url, data.field, function (response) {
+                    //提交成功,弹出提示框
+                if (response.code == 0) {
+                    layer.msg(response.message, {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //关闭窗口
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index); //再执行关闭
+                    });
+                }else {
+                    //点击添加按钮失败后取消禁用
+                    $("#btn-submit").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                    //失败则提示错误信息，窗口不关闭
+                    layer.alert(response.message, {
+                        icon: 2,
+                        anim: 6,
+                        title: '操作失败',
+                    }, function (index) {
+                        layer.close(index);
+                    });
+                }
+            });
+        });
+
+        form.verify({
+            username: function (value, item) { //value：表单的值、item：表单的DOM对象
+                if (value == '') {
+                    return '用户名不能为空';
+                }
+                if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(value)) {
+                    return '用户名不能有特殊字符';
+                }
+                if (/(^\_)|(\__)|(\_+$)/.test(value)) {
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+                if (/^\d+\d+\d$/.test(value)) {
+                    return '用户名不能全为数字';
+                }
+                //如果不想自动弹出默认提示框，可以直接返回 true，这时你可以通过其他任意方式提示（v2.5.7 新增）
+                if (value == 'xxx') {
+                    alert('用户名不能为敏感词');
+                    return true;
+                }
+            }
+
+            //我们既支持上述函数式的方式，也支持下述数组的形式
+            //数组的两个值分别代表：[正则匹配、匹配不符时的提示文字]
+            , pass: [
+                /^[\S]{6,12}$/
+                , '密码必须6到12位，且不能出现空格'
+            ]
+        });
+
+    });
+</script>
+</body>
+</html>
