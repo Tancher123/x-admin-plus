@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>员工列表</title>
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/layuimini.css?v=2.0.4.2}" media="all">
+    <link rel="stylesheet" th:href="@{/css/themes/default.css}" media="all">
+    <link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+    <style>
+        .div-content {
+            background-color: #fff;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .table-search-fieldset {
+            margin: 0;
+            border: 1px solid #e6e6e6;
+            padding: 10px 20px 5px 20px;
+            color: #6b6b6b;
+        }
+
+        .layui-btn .layui-icon {
+            padding: 0 !important;
+        }
+    </style>
+</head>
+<body onload="opener.location.reload()">
+<div class="div-content">
+    <form class="layui-form layui-form-pane">
+        <fieldset class="table-search-fieldset">
+            <legend>搜索条件</legend>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">员工姓名</label>
+                    <div class="layui-input-inline" style="width: 180px;">
+                        <input type="text" name="name" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">生日</label>
+                    <div class="layui-input-inline" style="width: 150px;">
+                        <input type="text" name="startDate" placeholder="开始日期" autocomplete="off"
+                               class="layui-input date">
+                    </div>
+                    <div class="layui-form-mid">-</div>
+                    <div class="layui-input-inline" style="width: 150px;">
+                        <input type="text" name="endDate" placeholder="结束日期" autocomplete="off"
+                               class="layui-input date">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <button id="btn-search" lay-submit lay-filter="btn-search-filer"
+                            class="layui-btn layui-btn-radius layui-btn-normal">
+                        <i class="layui-icon layui-icon-search"></i>
+                        搜索
+                    </button>
+                    <button type="reset" id="btn-reset" class="layui-btn layui-btn-radius  layui-btn-primary">
+                        <i class="layui-icon layui-icon-fonts-clear"></i>
+                        清空
+                    </button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+    <table id="table-emp" lay-filter="table-emp-filter"></table>
+</div>
+
+<script type="text/html" id="convertSex">
+    {{#  if(d.sex == 0){
+    return '男';
+    }else {
+    return '女';
+    }
+    }}
+</script>
+<script type="text/html" id="convertDept">
+    {{#
+    return d.dept.deptName;
+    }}
+</script>
+<!--左侧新增和删除按钮-->
+<script type="text/html" id="table-emp-toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-warm" lay-event="update">
+            <i class="layui-icon layui-icon-face-smile layui-icon-refresh"></i>
+            恢复
+        </button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delete">
+            <i class="layui-icon layui-icon-face-smile layui-icon-delete"></i>
+            永久删除
+        </button>
+    </div>
+</script>
+<!--列里面的按钮-->
+<script type="text/html" id="col-emp-toolbar">
+    <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="upd">
+        <i class="layui-icon layui-icon-refresh"></i>
+        恢复
+    </a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">
+        <i class="layui-icon layui-icon-delete"></i>
+        永久删除</a>
+</script>
+
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:inline="javascript">
+    // 获取前面的路径
+    var ctxPath = [[@{/}]];
+    var userName = [[${session.loginUsername}]];
+    var loginChName = [[${session.loginChName}]];
+    layui.use(['laydate', 'table', 'form'], function () {
+        var laydate = layui.laydate;
+        var table = layui.table;
+        var form = layui.form;
+
+        //点击新增、删除按钮触发的事件
+        table.on('toolbar(table-emp-filter)', function (obj) {
+            if (obj.event == 'delete') {
+                var checkStatus = table.checkStatus('table-emp'); //idTest 即为基础参数 id 对应的值
+                //如果没有选中任何数据
+                if (checkStatus.data.length == 0) {
+                    layer.alert('您未选中想要删除的数据', {icon: 2, anim: 6, title: "警告"});
+                    return false;
+                }
+                console.log(checkStatus.data); //获取选中行的数据
+                //获取选中的id
+                var idArr = new Array();
+                $(checkStatus.data).each(function () {
+                    idArr.push(this.empId);
+                });
+                //异步请求删除数据
+                layer.confirm('确认永久删除所选的数据?', {icon: 3, title: '确认删除'}, function (index) {
+                    var url = ctxPath + 'emp/del/' + idArr;
+                    var params = {
+                        _method: "DELETE"
+                    };
+                    $.post(url, params, function (response) {
+                        if (response.code == 0) {
+                            //成功删除、结果提示
+                            layer.msg(response.message, {icon: 1, time: 2000});
+                            //两秒后刷新表格
+                            setTimeout('window.location.reload()', 2000);
+                        } else {
+                            //删除失败
+                            layer.alert(response.message, {icon: 2, anim: 6});
+                        }
+                    });
+
+                    layer.close(index);
+                });
+
+
+            } else if (obj.event == 'update') {
+                var checkStatus = table.checkStatus('table-emp'); //idTest 即为基础参数 id 对应的值
+                //如果没有选中任何数据
+                if (checkStatus.data.length == 0) {
+                    layer.alert('您未选中想要恢复的数据', {icon: 2, anim: 6, title: "警告"});
+                    return false;
+                }
+                //获取选中的id
+                var idArr = new Array();
+                $(checkStatus.data).each(function () {
+                    idArr.push(this.empId);
+                });
+                //异步请求删除数据
+                layer.confirm('确认恢复所选的数据?', {icon: 3, title: '确认恢复'}, function (index) {
+                    if (loginChName != '管理员') {
+                        for (let i = 0; i < checkStatus.data.length; i++) {
+                            console.log(checkStatus.data[i].userName); //获取选中行的数据
+                            if (checkStatus.data[i].userName != userName) {
+                                layer.alert('不能恢复他人删除的数据', {icon: 2, anim: 6});
+                                return;
+                            }
+                        }
+                    }
+                    var url = ctxPath + 'emp/recover/' + idArr;
+                    var params = {
+                        _method: "Put"
+                    };
+                    $.post(url, params, function (response) {
+                        if (response.code == 0) {
+                            //成功恢复、结果提示
+                            layer.msg(response.message, {icon: 1, time: 2000});
+                            //两秒后刷新表格
+                            setTimeout('window.location.reload()', 2000);
+                        } else {
+                            //恢复失败
+                            layer.alert(response.message, {icon: 2, anim: 6});
+                        }
+                    });
+                    layer.close(index);
+                });
+
+            }
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '.date' //指定元素
+        });
+        //员工列表查询渲染
+        table.render({
+            elem: '#table-emp'
+            , url: ctxPath + 'emp/deleted'//数据接口
+            , page: true //开启分页
+            , toolbar: "#table-emp-toolbar"
+            , cols:
+                [[ //表头
+                    {type: 'checkbox', width: 60},
+                    {field: 'empId', title: '员工编号', width: 105, sort: true, align: 'center'}
+                    , {field: 'name', title: '姓名', width: 80}
+                    , {field: 'sex', title: '性别', width: 60, align: 'center', templet: "#convertSex"}
+                    , {field: 'sal', title: '工资', width: 100, sort: true, align: 'right'}
+                    , {field: 'dept', title: '部门', width: 100, align: 'center', templet: "#convertDept"}
+                    , {field: 'createTime', title: '创建时间', width: 250, align: 'center'}
+                    , {field: 'updateTime', title: '删除时间', width: 250, align: 'center'}
+                    , {field: 'userName', title: '操作者用户名', align: 'center'}
+                    , {title: '操作', width: 200, toolbar: '#col-emp-toolbar', align: 'center'}
+                ]]
+        });
+
+        //搜索
+        form.on('submit(btn-search-filer)', function (data) {
+            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+            //刷新表格
+            table.reload('table-emp', {
+                where: { //设定异步数据接口的额外参数，任意设
+                    name: data.field.name,
+                    startDate: data.field.startDate,
+                    endDate: data.field.endDate
+                }
+                , page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            }); //只重载数据
+            return false;
+        });
+
+        //监听操作列
+        table.on('tool(table-emp-filter)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+            console.log(data);
+
+            if (layEvent == 'del') {
+                //异步请求删除数据
+                layer.confirm('确认永久删除姓名为：' + data.name + ' 的员工？', {icon: 3, title: '操作警告'}, function (index) {
+                    var url = ctxPath + 'emp/del/' + data.empId;
+                    var params = {
+                        _method: "DELETE"
+                    };
+                    $.post(url, params, function (response) {
+                        if (response.code == 0) {
+                            //成功删除、结果提示
+                            layer.msg(response.message, {icon: 1, time: 2000});
+                            //两秒后刷新表格
+                            setTimeout('window.location.reload()', 2000);
+                        } else {
+                            //删除失败
+                            layer.alert(response.message, {icon: 2, anim: 6});
+                        }
+                    });
+
+                    layer.close(index);
+                });
+
+            } else if (layEvent == 'upd') {
+
+                layer.confirm('确认恢复姓名为：' + data.name + ' 的员工？', {icon: 3, title: '操作警告'}, function (index) {
+                    if (data.userName != userName) {
+                        layer.alert('不能恢复他人删除的数据', {icon: 2, anim: 6});
+                        return;
+                    }
+                    var url = ctxPath + 'emp/recover/' + data.empId;
+                    var params = {
+                        _method: "Put"
+                    };
+                    $.post(url, params, function (response) {
+                        if (response.code == 0) {
+                            //成功删除、结果提示
+                            layer.msg(response.message, {icon: 1, time: 2000});
+                            //两秒后刷新表格
+                            setTimeout('window.location.reload()', 2000);
+                        } else {
+                            //删除失败
+                            layer.alert(response.message, {icon: 2, anim: 6});
+                        }
+                    });
+                    layer.close(index);
+                });
+
+            }
+        });
+    });
+
+
+</script>
+</body>
+</html>

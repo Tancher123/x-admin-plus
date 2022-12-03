@@ -62,11 +62,20 @@ public interface UserService {
     User selectUserById(int id);
 
     /**
-     * @param name:
+     * @param username:
       * @return User
      * @author 陈天赐
      * @description 根据用户名查找
      * @date 2022/11/30 22:48
      */
     User selectUserByUsername(String username);
+
+    /**
+     * @param email:
+      * @return User
+     * @author 陈天赐
+     * @description 根据邮箱查找
+     * @date 2022/12/2 22:13
+     */
+    User selectUserByEmail(String email);
 }

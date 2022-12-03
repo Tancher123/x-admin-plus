@@ -69,4 +69,12 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.selectOne ( wrapper );
         return user;
     }
+
+    @Override
+    public User selectUserByEmail (String email) {
+        QueryWrapper<User> wrapper = new QueryWrapper<> ( );
+        wrapper.eq ( "email",email );
+        User user = userMapper.selectOne ( wrapper );
+        return user;
+    }
 }

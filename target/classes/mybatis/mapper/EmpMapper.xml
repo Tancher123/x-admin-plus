@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ctc.emp.mapper.EmpMapper">
+    <resultMap id="empMap" type="Emp">
+        <id column="emp_id" property="empId"></id>
+        <result column="name" property="name"></result>
+        <result column="sex" property="sex"></result>
+        <result column="age" property="age"></result>
+        <result column="sal" property="sal"></result>
+        <result column="birthday" property="birthday"></result>
+        <result column="address" property="address"></result>
+        <result column="dept_id" property="deptId"></result>
+        <result column="version" property="version"></result>
+        <result column="deleted" property="deleted"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="update_time" property="updateTime"></result>
+        <result column="user_name" property="userName"></result>
+        <association property="dept" column="dept_id" javaType="Dept">
+            <id column="dept_id" property="deptId"></id>
+            <result column="dept_name" property="deptName"></result>
+        </association>
+    </resultMap>
+    <sql id="getEmpListWhere">
+        <where>
+            <if test="name != null and name != ''">
+                name like '%' #{name} '%'
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+                   and birthday >= #{startDate}
+             ]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[
+                 and birthday <= #{endDate}
+             ]]>
+            </if>
+            and deleted = 0
+        </where>
+    </sql>
+    <sql id="getEmpListWhereDeleted">
+        <where>
+            <if test="name != null and name != ''">
+                name like '%' #{name} '%'
+            </if>
+            <if test="startDate != null">
+                <![CDATA[
+                   and birthday >= #{startDate}
+             ]]>
+            </if>
+            <if test="endDate != null">
+                <![CDATA[
+                 and birthday <= #{endDate}
+             ]]>
+            </if>
+            and deleted = 1
+        </where>
+    </sql>
+    <!--  恢复员工信息(批量)  -->
+    <update id="updateEmpDeleted" parameterType="list">
+        update emp set deleted = 0
+        where emp_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+    <update id="updateEmpUsernameByIds">
+        update emp set user_name = #{userName}
+        where emp_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+    <!--  批量永久删除  -->
+    <delete id="deleteEmpDelByIds" parameterType="int">
+        delete from emp where emp_id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <!--  分页查询所有员工数据  -->
+    <select id="getEmpList" parameterType="com.ctc.emp.vo.EmpQuery" resultMap="empMap">
+        select * from emp a left join dept b on a.dept_id = b.dept_id
+        <include refid="getEmpListWhere"></include>
+        limit #{start},#{limit}
+    </select>
+    <!--回收站-->
+    <select id="selectEmpByDeleted" parameterType="com.ctc.emp.vo.EmpQuery" resultMap="empMap">
+        select * from emp a left join dept b on a.dept_id = b.dept_id
+        <include refid="getEmpListWhereDeleted"></include>
+        limit #{start},#{limit}
+    </select>
+    <!--  员工数据总数(被删除的) -->
+    <select id="countEmpListDeleted" parameterType="com.ctc.emp.vo.EmpQuery" resultType="Long">
+        select count(1) from emp
+        <include refid="getEmpListWhereDeleted"></include>
+    </select>
+    <!--  员工数据总数  -->
+    <select id="countEmpList" parameterType="com.ctc.emp.vo.EmpQuery" resultType="Long">
+        select count(1) from emp
+        <include refid="getEmpListWhere"></include>
+    </select>
+</mapper>

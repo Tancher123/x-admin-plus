@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <title>项目描述</title>
+    <style>
+        .layui-container h4{
+            font-weight: bold !important;
+            margin: 10px 0;
+        }
+        p{
+            margin: 5px 10px;
+        }
+        .txt{
+            margin-left: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-container">
+    <h1>项目描述</h1>
+
+    <h3><b>利用Maven+SpringBoot+SSM</b>框架实现员工管理系统</h3>
+
+    <h4>1、项目描述：</h4>
+
+    <p>项目基于J2EE平台，B/S模式开发。采用mybatis, mybatis-plus，Spring, Ajax, Spring MVC，Spring Boot等技术。</p>
+
+    <p>1.系统大量采用工厂模式、MVC模式等设计模式,并把spring的AOP思想合理的使用在日志处理和系统异常处理。</p>
+
+    <p> 2.使用AJAX技术发送异步请求，严格实现RESTful风格。</p>
+
+    <p> 3.使用Spring的核心技术IOC可以很好的控制web的生命周期以及各种服务的注入关系。</p>
+
+    <p> 4.服务层沿用代理设计模式来实现，系统的服务层以下随时可以更换，同时通过Spring的托管机制可以和DAO层无缝耦合起来。</p>
+
+    <p> 5．DAO层使用Spring 提供的mybatis 模板和 mybatis API 访问持久层，这样可以进一步解耦，在系统查询模块处大量使用正则表达式进行查询操作。</p>
+
+    <h4>2、项目功能</h4>
+    <p>1. 主要包括员工信息管理：员工信息新增、修改、删除、查询、批量删除。
+    </p>
+    <p>2. 回收站：被删除的员工信息保存到回收站，用户只能还原自己操作删除的信息</p>
+    <p>3. 登录
+    </p>
+    <p>4. 注册：不能注册已经存在的用户名，注册成功密码加密
+    </p>
+    <p>5. 完善用户信息
+    </p>
+    <p>6. 修改密码：先验证当前密码，验证成功后方可注册
+    </p>
+    <p>7. 找回密码：通过用户完善的姓名和密码进行核对，核对成功后找回
+    </p>
+
+
+    <h4>3、权限设置</h4>
+
+    <p>1. 用户注册后默认为普通用户
+    </p>
+    <p>2. 普通用户权限：</p>
+    <div class="txt">
+        <p>- 员工信息新增、删除、查询、批量删除，不能修改信息 <br>
+            - 还原自己操作删除的信息，不能还原他人修改的信息，不能永久删除员工信息 <br>
+            - 完善用户信息 <br>
+            - 修改用户信息 <br>
+            - 修改密码 <br>
+            - 找回密码</p>
+    </div>
+</div>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+</body>
+</html>

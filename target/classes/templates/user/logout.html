@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>注销</title>
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <link rel="stylesheet" th:href="@{lib/layui-v2.6.3/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{css/public.css}" media="all">
+    <link rel="stylesheet" th:href="@{js/lay-module/step-lay/step.css}" media="all">
+    <style>
+        tip {
+            margin-top: 10px;
+            line-height: 10px;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+
+        <div class="layui-fluid">
+            <div class="layui-card">
+                <div class="layui-card-body" style="padding-top: 40px;">
+                    <div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
+                        <div carousel-item>
+                            <div>
+                                <form class="layui-form" style="margin: 0 auto;max-width: 460px;padding-top: 40px;">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">邮箱：</label>
+                                        <div class="layui-input-block">
+                                            <input type="email" id="email" placeholder="请填写邮箱" class="layui-input"
+                                                   lay-verify="required|email" name="email"/>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">验证码:</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" maxlength="6" id="emailCode" name="emailCode"
+                                                   placeholder="请输入6位验证码" autocomplete="off" class="layui-input">
+                                        </div>
+                                        <input type="hidden" name="msg" value="账号注销">
+                                        <div class=" layui-word-aux">
+                                            <button class="layui-btn" id="sendCode" lay-submit lay-filter="sendCode">
+                                                发送验证码
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button class="layui-btn" lay-submit lay-filter="formStep">
+                                                &emsp;下一步&emsp;
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div>
+                                <form class="layui-form" style="margin: 0 auto;max-width: 460px;padding-top: 40px;">
+                                    <div class="layui-form-item layui-form-text">
+                                        <label class="layui-form-label">注销理由：</label>
+                                        <div class="layui-input-block">
+                                            <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <div class="layui-input-block">
+                                            <button type="button" class="layui-btn layui-btn-primary pre">上一步</button>
+                                            <button id="btn-submit" class="layui-btn" lay-submit lay-filter="formStep2">
+                                                确认注销
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div>
+                                <div style="text-align: center;margin-top: 90px;">
+                                    <i class="layui-icon layui-circle"
+                                       style="color: white;font-size:30px;font-weight:bold;background: #52C41A;padding: 20px;line-height: 80px;">&#xe605;</i>
+                                    <div style="font-size: 24px;color: #333;font-weight: 500;margin-top: 30px;">
+                                        注销成功
+                                    </div>
+                                    <div style="font-size: 14px;color: #666;margin-top: 20px;">欢迎下次再使用</div>
+                                </div>
+                                <div style="text-align: center;margin-top: 50px;">
+                                    <button class="layui-btn next">前往登录页面</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div style="color: #666;margin-top: 30px;margin-bottom: 40px;padding-left: 30px;">
+                        <h3>说明</h3><br>
+                        <h4>请填写账号对应的真实邮箱</h4>
+                        <p>邮箱不真实会导致验证失败</p>
+                        <br><h4>有问题请联系管理员</h4>
+                        <p>管理员QQ：1299466140</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{lib/layui-v2.6.3/layui.js}" charset="utf-8"></script>
+<script th:src="@{/js/lay-config.js?v=1.0.4}" charset="utf-8"></script>
+<script th:inline="javascript">
+    // 获取前面的路径
+    var ctxPath = [[@{/}]];
+
+        layui.use(['form', 'step'], function () {
+            var $ = layui.$,
+                form = layui.form,
+                step = layui.step;
+            step.render({
+                elem: '#stepForm',
+                filter: 'stepForm',
+                width: '100%', //设置容器宽度
+                stepWidth: '750px',
+                height: '500px',
+                stepItems: [{
+                    title: '邮箱验证'
+                }, {
+                    title: '填写注销的理由'
+                }, {
+                    title: '注销成功'
+                }]
+            });
+            //发送验证码
+            var maxTime = 60;
+            var sendCode = document.getElementById("sendCode");
+            var url = ctxPath + 'user/email';
+            form.on('submit(sendCode)', function (data) {
+                $("#sendCode").attr("disabled", "disabled").addClass("layui-btn-disabled");
+                $.post(url, data.field, function (response) {
+                    //信息和数据库匹配成功，跳到下一步
+                    if (response.code == 0) {
+                        //倒计时
+                        function jia(a) {
+                            if (a < 10)
+                                return "0" + a;
+                            else
+                                return a;
+                        }
+
+                        var last = function () {
+                            maxTime = jia(maxTime);
+                            var mes = maxTime + " 秒后重发";
+                            sendCode.innerHTML = '<b style="color: #ea5800">' + mes + '</b>';
+                            maxTime--;
+                            if (maxTime < 0) {
+                                clearInterval(interval);//关闭定时器
+                                sendCode.innerHTML = '重发验证码';
+                                maxTime = 60;
+                                $("#sendCode").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                            }
+                        };
+                        var interval = setInterval(function () {
+                            last();
+                        }, 1000);
+                    } else {
+                        //信息和数据库匹配失败，提示错误
+                        layer.alert(response.message, {icon: 5, anim: 6});
+                        $("#sendCode").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                    }
+                });
+                return false;
+            });
+            var emailCode = document.getElementById("emailCode");
+            //判断验证码是否正确，正确就下一步，错误就提示
+            form.on('submit(formStep)', function (data) {
+                console.log(data.field.emailCode);
+                if (data.field.emailCode == '' || data.field.emailCode == null) {
+                    //错误
+                    layer.alert('请先填写验证码再操作', {icon: 5, anim: 6});
+                    return false;
+                }
+
+                if (/^\d{6}$/.test(emailCode.value)) {
+
+                    var url = ctxPath + 'user/email/code';
+                    $.post(url, data.field, function (response) {
+                        //正确
+                        if (response.code == 0) {
+                            step.next('#stepForm');
+                        } else {
+                            //错误
+                            layer.alert(response.message, {icon: 5, anim: 6});
+                        }
+                    });
+                } else {
+                    layer.alert("请输入6位数字验证码", {icon: 5, anim: 6});
+                }
+                return false;
+            });
+
+            //填写新密码，成功找回密码，失败提示
+            form.on('submit(formStep2)', function (data) {
+                layer.confirm("确定注销？", {icon: 3,btn:["确认注销","再想想"],title: '确认注销'}, function (index) {
+                    //点击找回按钮后禁用
+                    $("#btn-submit").attr("disabled", "disabled").addClass("layui-btn-disabled");
+                    var url = ctxPath + 'user/logout';
+                    data.field._method = 'DELETE';
+                    $.post(url, data.field, function (response) {
+                        if (response.code == 0) {
+                            //注销成功，跳转到完成
+                            step.next('#stepForm');
+                        } else {
+                            //注销失败
+                            //失败后取消禁用
+                            $("#btn-submit").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                            layer.alert(response.message, {icon: 5, anim: 6});
+                        }
+                    });
+                    layer.close(index);
+                });
+                return false;
+            });
+
+            //返回
+            $('.pre').click(function () {
+                step.pre('#stepForm');
+            });
+
+            //去登录页面
+            $('.next').click(function () {
+                window.location = ctxPath + 'login';
+            });
+        });
+</script>
+</body>
+</html>

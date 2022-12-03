@@ -34,6 +34,8 @@ public class MyWebConfig implements WebMvcConfigurer {
                 "/user/register",
                 "/findPwd",
                 "/user/findPwd",
+                "/user/findPwdCode",
+                "/user/email",
                 "/user/updatePwd/**",
                 "/user/logout",
                 "/captcha",

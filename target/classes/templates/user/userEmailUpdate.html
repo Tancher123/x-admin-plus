@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱修改</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <style>
+
+        .layuimini-container {
+            height: 90% !important;
+        }
+
+    </style>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layuimini-container">
+        <div class="layuimini-main">
+            <div class="layui-form layuimini-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">当前邮箱</label>
+                    <div class="layui-input-inline">
+                        <input type="text" disabled th:value="${email}" class="layui-input">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form layuimini-form">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">验证当前邮箱</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="required|email" placeholder="请输入当前完整邮箱"
+                               autocomplete="off" name="old_email" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">要修改的邮箱:</label>
+                    <div class="layui-input-inline">
+                        <input type="text" lay-verify="required|email" placeholder="请输入想要修改的邮箱"
+                               autocomplete="off" name="email" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" id="btn-submit" lay-submit lay-filter="saveBtn">
+                            确认修改
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/js/lay-config.js?v=1.0.4}" charset="utf-8"></script>
+
+<script th:inline="javascript">
+    var ctxPath = [[@{/}]];
+
+
+        layui.use(['form', 'miniTab', 'layer'], function () {
+            var form = layui.form,
+                layer = layui.layer,
+                miniTab = layui.miniTab;
+            var $ = layui.$;
+            //监听提交
+            form.on('submit(saveBtn)', function (data) {
+                //点击提交按钮后禁用
+                $("#btn-submit").attr("disabled", "disabled").addClass("layui-btn-disabled");
+                console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+                //异步请求提交数据
+                var url = ctxPath + 'user/update/email';
+                data.field._method = 'put';
+                //修改基本信息
+                $.post(url, data.field, function (response) {
+                    //提交成功,弹出提示框
+                    if (response.code == 0) {
+                        layer.msg(response.message, {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                            //关闭窗口
+                            //两秒后刷新表格
+                            var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index); //再执行关闭
+                            //并且刷新数据表格
+                            parent.location.reload();
+                        });
+                    } else {
+                        //点击添加按钮失败后取消禁用
+                        $("#btn-submit").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                        //失败则提示错误信息，窗口不关闭
+                        layer.alert(response.message, {
+                            icon: 2,
+                            anim: 6,
+                            title: '操作失败',
+                        }, function (index) {
+                            layer.close(index);
+                        });
+                    }
+                });
+            });
+        });
+</script>
+</body>
+</html>
