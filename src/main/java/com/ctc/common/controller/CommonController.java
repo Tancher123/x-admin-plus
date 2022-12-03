@@ -90,10 +90,11 @@ public class CommonController {
     public String toEmpDeletedUi ( ) {
         return "emp/empDeleted";
     }
+
     //跳转到修改邮箱页面
     @GetMapping("/email/{email}")
-    public String toUpdateEmail (@PathVariable("email") String email,Model model) {
-        model.addAttribute ( "email",email );
+    public String toUpdateEmail (@PathVariable("email") String email , Model model) {
+        model.addAttribute ( "email" , email );
         return "user/userEmailUpdate";
     }
 
@@ -113,6 +114,7 @@ public class CommonController {
         model.addAttribute ( "deptList" , empService.getAllDept ( ) );
         return "emp/empUpdate";
     }
+
     //根据id查询基本信息
     @GetMapping("/user/account")
     public String getUser (Model model , HttpServletRequest request) {
@@ -131,8 +133,11 @@ public class CommonController {
             return "user/user-setting-new";
         }
         String email = user.getEmail ( );
-        String emailEncrypt = email.replaceAll ( email.substring ( 4 , email.lastIndexOf ( "@" ) ) , "*****" );
-        user.setEmail ( emailEncrypt );
+        //邮箱加密
+        if ( email != null ) {
+            String emailEncrypt = email.replaceAll ( email.substring ( 4 , email.lastIndexOf ( "@" ) ) , "*****" );
+            user.setEmail ( emailEncrypt );
+        }
         model.addAttribute ( "accountList" , user );
         model.addAttribute ( "proList" , userService.getAllPro ( ) );
         return "user/user-setting";
