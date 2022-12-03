@@ -112,7 +112,8 @@
                 </div>
             </div>
         </form>
-        <div class="logout"><a onclick="confirm('确定注销？')" th:href="@{/out}" target="_blank"
+        <div class="logout"><a target="_blank"
+                               onclick="return confirm('确定注销？');" th:href="@{/out}"
                                class="layui-btn layui-btn-primary" id="btn-logout">
             <i class="layui-icon layui-icon-logout"></i>
             注销</a></div>
@@ -129,6 +130,8 @@
             layer = layui.layer,
             miniTab = layui.miniTab;
         var $ = layui.$;
+
+
         //监听提交
         form.on('submit(saveBtn)', function (data) {
             //点击提交按钮后禁用
@@ -184,7 +187,6 @@
                 }
             }
         });
-
         var url = ctxPath + 'email/' + email;
         //修改邮箱
         $("#toEmail").on("click", function () {
