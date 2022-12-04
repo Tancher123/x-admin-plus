@@ -21,7 +21,7 @@ public class EmailUtils {
     @Autowired
     JavaMailSenderImpl mailSender;
 
-    public int email(String msg,String emailAccount) throws MessagingException {
+    public int email (String msg , String emailAccount) throws MessagingException {
         int i = (int) ((Math.random ( ) * 9 + 1) * 100000);
 //        System.out.println (i );
         //一个复杂的邮件
@@ -29,7 +29,7 @@ public class EmailUtils {
         //组装
         MimeMessageHelper helper = new MimeMessageHelper ( mimeMessage , true );
         //正文
-        helper.setSubject ( "验证码" );
+        helper.setSubject ( "邮箱验证码" );
         helper.setText ( "<head>\n" +
                 "    <base target=\"_blank\" />\n" +
                 "    <style type=\"text/css\">::-webkit-scrollbar{ display: none; }</style>\n" +
@@ -59,7 +59,7 @@ public class EmailUtils {
                 "                <div style=\"line-height:1.5;font-size:14px;margin-bottom:25px;color:#4d4d4d;\">\n" +
                 "                    <strong style=\"display:block;margin-bottom:15px;\">尊敬的用户：<span style=\"color:#f60;font-size: 16px;\"></span>您好！</strong>\n" +
                 "                    <strong style=\"display:block;margin-bottom:15px;\">\n" +
-                "                        您正在进行<span style=\"color: red\">"+msg+"</span>操作，请在验证码输入框中输入：<span style=\"color:#f60;font-size: 24px\">"+i+"</span>，以完成操作。\n" +
+                "                        您正在进行<span style=\"color: red\">" + msg + "</span>操作，请在验证码输入框中输入：<span style=\"color:#f60;font-size: 24px\">" + i + "</span>，以完成操作。\n" +
                 "                    </strong>\n" +
                 "                </div>\n" +
                 "                <div style=\"margin-bottom:30px;\">\n" +
@@ -76,7 +76,7 @@ public class EmailUtils {
                 "                    <p>此为系统邮件，请勿回复<br>\n" +
                 "                        请保管好您的邮箱，避免账号被他人盗用\n" +
                 "                    </p>\n" +
-                "                    <p>此验证码10分钟内有效</p>\n" +
+                "                    <p style='color: red;font-weight: bold;'>此验证码10分钟内有效</p>\n" +
                 "                </div>\n" +
                 "            </div>\n" +
                 "        </td>\n" +
@@ -87,7 +87,6 @@ public class EmailUtils {
         //附件
 //        helper.addAttachment ( "课表.jpg" ,new File ( "C:\\Users\\陈天赐\\Desktop\\课表.jpg" ) );
 
-//        helper.setTo ( "2446391250@qq.com" );
         helper.setTo ( emailAccount );
         helper.setFrom ( "1299466140@qq.com" );
 

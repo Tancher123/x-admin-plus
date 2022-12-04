@@ -69,6 +69,18 @@
                                autocomplete="off" name="age" class="layui-input">
                     </div>
                 </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">职业</label>
+                    <div class="layui-input-block">
+                        <select name="proId" lay-verify="required">
+                            <option value="">请选择</option>
+                            <option th:each="pro:${proList}"
+                                    th:value="${pro.proId}"
+                                    th:text="${pro.proName}"></option>
+                        </select>
+                    </div>
+                </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">绑定邮箱</label>
                     <div class="layui-input-block">
@@ -87,17 +99,6 @@
                         <button class="layui-btn" id="sendCode" lay-submit lay-filter="sendCode">
                             发送验证码
                         </button>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">职业</label>
-                    <div class="layui-input-block">
-                        <select name="proId" lay-verify="required">
-                            <option value="">请选择</option>
-                            <option th:each="pro:${proList}"
-                                    th:value="${pro.proId}"
-                                    th:text="${pro.proName}"></option>
-                        </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -172,38 +173,38 @@
                 layer.alert('请先填写验证码再操作', {icon: 5, anim: 6});
                 return false;
             }
-                //点击提交按钮后禁用
-                $("#btn-submit").attr("disabled", "disabled").addClass("layui-btn-disabled");
-                console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
-                //异步请求提交数据
-                var url = ctxPath + 'user/account';
-                data.field._method = 'put';
-                $.post(url, data.field, function (response) {
-                    //提交成功,弹出提示框
-                    if (response.code == 0) {
-                        layer.msg(response.message, {
-                            icon: 1,
-                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
-                        }, function () {
-                            //关闭窗口
-                            //两秒后刷新表格
-                           window.location.reload();
-                            // var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            // parent.layer.close(index); //再执行关闭
-                        });
-                    } else {
-                        //点击添加按钮失败后取消禁用
-                        $("#btn-submit").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
-                        //失败则提示错误信息，窗口不关闭
-                        layer.alert(response.message, {
-                            icon: 2,
-                            anim: 6,
-                            title: '操作失败',
-                        }, function (index) {
-                            layer.close(index);
-                        });
-                    }
-                });
+            //点击提交按钮后禁用
+            $("#btn-submit").attr("disabled", "disabled").addClass("layui-btn-disabled");
+            console.log(data.field); //当前容器的全部表单字段，名值对形式：{name: value}
+            //异步请求提交数据
+            var url = ctxPath + 'user/account';
+            data.field._method = 'put';
+            $.post(url, data.field, function (response) {
+                //提交成功,弹出提示框
+                if (response.code == 0) {
+                    layer.msg(response.message, {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        //关闭窗口
+                        //两秒后刷新表格
+                        window.location.reload();
+                        // var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        // parent.layer.close(index); //再执行关闭
+                    });
+                } else {
+                    //点击添加按钮失败后取消禁用
+                    $("#btn-submit").removeAttr("disabled", "disabled").removeClass("layui-btn-disabled");
+                    //失败则提示错误信息，窗口不关闭
+                    layer.alert(response.message, {
+                        icon: 2,
+                        anim: 6,
+                        title: '操作失败',
+                    }, function (index) {
+                        layer.close(index);
+                    });
+                }
+            });
         });
 
         form.verify({

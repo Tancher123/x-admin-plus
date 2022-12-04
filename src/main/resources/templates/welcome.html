@@ -15,7 +15,7 @@
             position: relative;
         }
 
-        .box1{
+        .box1 {
             width: 180px;
             height: 30px;
             margin: 20px auto;
@@ -27,7 +27,7 @@
         .one,
         .two,
         .three,
-        .four{
+        .four {
             font-size: 14px;
             font-weight: bolder;
             width: 30px;
@@ -39,29 +39,33 @@
             text-align: center;
             line-height: 20px;
         }
-        .box .box1 .txt{
+
+        .box .box1 .txt {
             color: #fff;
         }
-        span{
+
+        span {
             margin: 0 1px;
         }
-        header{
-            background-image:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)), url(https://images.pexels.com/photos/1083822/pexels-photo-1083822.jpeg?cs=srgb&dl=pexels-lisa-1083822.jpg&fm=jpg);
+
+        header {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://images.pexels.com/photos/1083822/pexels-photo-1083822.jpeg?cs=srgb&dl=pexels-lisa-1083822.jpg&fm=jpg);
             height: 100vh;
             background-size: cover;
             background-position: center;
         }
 
-        ul{
+        ul {
             float: right;
             list-style-type: none;
             margin: 15px;
         }
-        ul li{
+
+        ul li {
             display: inline-block;
         }
 
-        ul li a{
+        ul li a {
             text-decoration: none;
             color: #fff;
             padding: 5px 20px;
@@ -70,22 +74,25 @@
             border-radius: 20px;
         }
 
-        ul li a:hover{
+        ul li a:hover {
             background-color: #fff;
             color: #000;
         }
-        .title{
+
+        .title {
             position: absolute;
-            top:50%;
-            left:50%;
-            transform: translate(-50%,-50%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
-        .title h1{
+
+        .title h1 {
             color: #fff;
             font-size: 70px;
             font-family: Century Gothic;
         }
-        .welcome{
+
+        .welcome {
             width: 500px;
             margin: 0 auto;
             color: red;
@@ -103,7 +110,8 @@
 
         </ul>
     </div>
-    <div class="welcome"><h1>欢迎您, <span th:text="${session.loginChName}"></span></h1></div>
+    <div class="welcome"><h1>欢迎您,<span th:text="${session.loginUsername}"></span>。权限：<span
+            th:text="${session.loginChName}"></span></h1></div>
 
     <div class="box">
         <div class="box1">
@@ -134,13 +142,13 @@
         var box = document.querySelector('.box1');
         box.children;
         util.countdown(endTime, serverTime, function (date, serverTime, timer) {
-            var day= date[0];
+            var day = date[0];
             box.children[0].innerHTML = day;
             var h = date[1];
             box.children[2].innerHTML = h;
             var m = date[2];
             box.children[4].innerHTML = m;
-            var s =  date[3];
+            var s = date[3];
             box.children[6].innerHTML = s;
         });
     });

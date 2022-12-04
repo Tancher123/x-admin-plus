@@ -102,12 +102,11 @@ public class UserController {
             CaptchaUtil.clear ( request );  // 清除session中的验证码
             return Result.fail ( "验证码错误" );
         }
-        if ( user.getUsername ( ).equals ( "chentianciSB" ) ||
-                user.getUsername ( ).equals ( "chentianciisSB" ) ||
-                user.getUsername ( ).equals ( "ctcsb123" ) ||
-                user.getUsername ( ).equals ( "ctcisSB123" )
-        ) {
-            return Result.fail ( "不能出现敏感词汇！" );
+        if ( user.getUsername ( ).contains ( "sb" ) ||
+                user.getUsername ( ).contains ( "cnm" ) ||
+                user.getUsername ( ).contains ( "cb" ) ||
+                user.getUsername ( ).contains ( "2b" ) ) {
+            return Result.fail ( "用户名不能出现敏感词汇！" );
         }
 
         if ( user.getUsername ( ) != null && user.getPassword ( ) != null ) {
@@ -149,7 +148,16 @@ public class UserController {
                 return Result.fail ( "验证码不正确！" );
             }
             String email = user.getEmail ( );
-
+            String card = user.getCard ( );
+            String number = user.getNumber ( );
+            User userByCard = userService.selectUserByCard ( card );
+            if ( userByCard != null ) {
+                return Result.fail ( "该身份证已存在，请确认后再输入！" );
+            }
+            User userByNumber = userService.selectUserByNumber ( number );
+            if ( userByNumber != null ) {
+                return Result.fail ( "该手机号码已存在，请确认后再输入！" );
+            }
             User userByEmail = userService.selectUserByEmail ( email );
             if ( userByEmail != null ) {
                 return Result.fail ( "该邮箱已存在，请确认后再输入！" );
@@ -179,7 +187,7 @@ public class UserController {
             return Result.fail ( "完整邮箱错误" );
         }
         User userByEmail = userService.selectUserByEmail ( email );
-        if ( userByEmail!= null ){
+        if ( userByEmail != null ) {
             return Result.fail ( "该邮箱已存在！" );
         }
         User userEmail = new User ( );

@@ -36,16 +36,16 @@ public interface UserService {
 
     /**
      * @param id:
-      * @return int
+     * @return int
      * @author 陈天赐
      * @description 用户注销
      * @date 2022/11/30 21:29
      */
-    int deleteUserById(int id);
+    int deleteUserById (int id);
 
     /**
      * @param user:
-      * @return int
+     * @return int
      * @author 陈天赐
      * @description 修改以用户信息
      * @date 2022/11/30 21:30
@@ -54,28 +54,46 @@ public interface UserService {
 
     /**
      * @param id:
-      * @return User
+     * @return User
      * @author 陈天赐
      * @description 根据id查询信息
      * @date 2022/11/30 21:40
      */
-    User selectUserById(int id);
+    User selectUserById (int id);
 
     /**
      * @param username:
-      * @return User
+     * @return User
      * @author 陈天赐
      * @description 根据用户名查找
      * @date 2022/11/30 22:48
      */
-    User selectUserByUsername(String username);
+    User selectUserByUsername (String username);
 
     /**
      * @param email:
-      * @return User
+     * @return User
      * @author 陈天赐
      * @description 根据邮箱查找
      * @date 2022/12/2 22:13
      */
-    User selectUserByEmail(String email);
+    User selectUserByEmail (String email);
+
+    /**
+     * @param number:
+     * @return User
+     * @author 陈天赐
+     * @description 根据电话号码查找
+     * @date 2022/12/2 22:13
+     */
+    User selectUserByNumber (String number);
+
+    /**
+     * @param card:
+     * @return User
+     * @author 陈天赐
+     * @description 根据身份证查找
+     * @date 2022/12/2 22:13
+     */
+    User selectUserByCard (String card);
 }

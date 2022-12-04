@@ -65,12 +65,6 @@
               "href": "page/form.html",
               "icon": "fa fa-list-alt",
               "target": "_self"
-            },
-            {
-              "title": "分步表单",
-              "href": "page/form-step.html",
-              "icon": "fa fa-navicon",
-              "target": "_self"
             }
           ]
         },

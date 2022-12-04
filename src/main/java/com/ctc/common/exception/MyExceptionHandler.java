@@ -22,6 +22,12 @@ public class MyExceptionHandler {
         if ( e.getMessage () == null ){
             return Result.fail ( "您未进行验证，请先验证" );
         }
+        if ( e.getMessage ().contains ( "535" ) ){
+            return Result.fail ( "发送邮箱验证码出现未知明错误，请联系管理员！" );
+        }
+        if ( e.getMessage ().contains ( "550" ) ){
+            return Result.fail ( "您的邮箱有误，请确认无误后再操作" );
+        }
         return Result.fail ( "未知明错误，如有问题联系管理员" );
     }
 }

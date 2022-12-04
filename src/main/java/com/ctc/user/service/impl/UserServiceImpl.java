@@ -26,6 +26,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ProMapper proMapper;
+
     @Override
     public User login (User user) {
         QueryWrapper<User> wrapper = new QueryWrapper ( );
@@ -56,8 +57,9 @@ public class UserServiceImpl implements UserService {
         int i = userMapper.updateById ( user );
         return i;
     }
+
     @Override
-    public User selectUserById(int id){
+    public User selectUserById (int id) {
         User user = userMapper.selectById ( id );
         return user;
     }
@@ -65,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User selectUserByUsername (String username) {
         QueryWrapper<User> wrapper = new QueryWrapper<> ( );
-        wrapper.eq ( "username",username );
+        wrapper.eq ( "username" , username );
         User user = userMapper.selectOne ( wrapper );
         return user;
     }
@@ -73,7 +75,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public User selectUserByEmail (String email) {
         QueryWrapper<User> wrapper = new QueryWrapper<> ( );
-        wrapper.eq ( "email",email );
+        wrapper.eq ( "email" , email );
+        User user = userMapper.selectOne ( wrapper );
+        return user;
+    }
+
+    @Override
+    public User selectUserByNumber (String number) {
+        QueryWrapper<User> wrapper = new QueryWrapper<> ( );
+        wrapper.eq ( "number" , number );
+        User user = userMapper.selectOne ( wrapper );
+        return user;
+    }
+
+    @Override
+    public User selectUserByCard (String card) {
+        QueryWrapper<User> wrapper = new QueryWrapper<> ( );
+        wrapper.eq ( "card" , card );
         User user = userMapper.selectOne ( wrapper );
         return user;
     }
