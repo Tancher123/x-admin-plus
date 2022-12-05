@@ -2,154 +2,41 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <!-- 引入 layui.css -->
-    <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
     <link rel="icon" th:href="@{images/favicon.ico}">
     <title>欢迎</title>
     <style>
-        .box {
-            width: 200px;
-            height: 30px;
-            margin: 0 auto;
-            background-color: #663620;
-            position: relative;
-        }
-
-        .box1 {
-            width: 180px;
-            height: 30px;
-            margin: 20px auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .one,
-        .two,
-        .three,
-        .four {
-            font-size: 14px;
-            font-weight: bolder;
-            width: 30px;
-            height: 20px;
-            background-color: #fff;
-            border-radius: 5px;
-            margin-right: 3px;
-            color: #663620;
-            text-align: center;
-            line-height: 20px;
-        }
-
-        .box .box1 .txt {
-            color: #fff;
-        }
-
-        span {
-            margin: 0 1px;
-        }
-
-        header {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://images.pexels.com/photos/1083822/pexels-photo-1083822.jpeg?cs=srgb&dl=pexels-lisa-1083822.jpg&fm=jpg);
-            height: 100vh;
-            background-size: cover;
-            background-position: center;
-        }
-
-        ul {
-            float: right;
-            list-style-type: none;
-            margin: 15px;
-        }
-
-        ul li {
-            display: inline-block;
-        }
-
-        ul li a {
-            text-decoration: none;
-            color: #fff;
-            padding: 5px 20px;
-            border: 1px solid transparent;
-            transition: .6s ease;
-            border-radius: 20px;
-        }
-
-        ul li a:hover {
-            background-color: #fff;
-            color: #000;
-        }
-
-        .title {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .title h1 {
-            color: #fff;
-            font-size: 70px;
-            font-family: Century Gothic;
-        }
-
-        .welcome {
-            width: 500px;
-            margin: 0 auto;
-            color: red;
-            text-align: center;
+        .layui-carousel img {
+            width: 100%;
+            height: 520px;
         }
     </style>
 </head>
 <body>
 <header>
-    <div class="main">
-        <ul>
-            <li><a href="http://www.baidu.com" target="_blank">百度</a></li>
-            <li><a href="https://www.china.com" target="_blank">中华网</a></li>
-            <li><a href="https://blog.csdn.net" target="_blank"><span style="color: crimson;">C</span>SDN官网</a></li>
-
-        </ul>
-    </div>
-    <div class="welcome"><h1>欢迎您,<span th:text="${session.loginUsername}"></span>。权限：<span
-            th:text="${session.loginChName}"></span></h1></div>
-
-    <div class="box">
-        <div class="box1">
-            <span class="four"></span>
-            <span class="txt">天</span>
-            <span class="one"></span>
-            <span class="txt">时</span>
-            <span class="two"></span>
-            <span class="txt">分</span>
-            <span class="three"></span>
-            <span class="txt">秒</span>
+    <div class="layui-container">
+        <div class="layui-carousel" id="test1">
+            <div carousel-item>
+                <div><img th:src="@{images/ygtp1.jpg}" alt="员工图片"></div>
+                <div><img th:src="@{images/ygtp2.jpg}" alt="员工图片"></div>
+                <div><img th:src="@{images/ygtp3.jpg}" alt="员工图片"></div>
+                <div><img th:src="@{images/ygtp4.jpg}" alt="员工图片"></div>
+                <div><img th:src="@{images/ygtp5.jpg}" alt="员工图片"></div>
+            </div>
         </div>
-        <span style="position: absolute; top: 2px;left: -135px;font-weight: bold; font-size: 20px;color: red">距离除夕还有：</span>
-    </div>
-    <div class="title">
-        <h1><span style="color: crimson;">My</span> Homepage</h1>
     </div>
 </header>
 <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
-<!-- 引入 layui.js -->
-<script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
 <script>
-    layui.use('util', function () {
-        var util = layui.util;
-        //示例
-        var endTime = new Date("2023-01-21 0:0:0").getTime() //假设为结束日期
-            , serverTime = new Date().getTime(); //假设为当前服务器时间，这里采用的是本地时间，实际使用一般是取服务端的
-        var box = document.querySelector('.box1');
-        box.children;
-        util.countdown(endTime, serverTime, function (date, serverTime, timer) {
-            var day = date[0];
-            box.children[0].innerHTML = day;
-            var h = date[1];
-            box.children[2].innerHTML = h;
-            var m = date[2];
-            box.children[4].innerHTML = m;
-            var s = date[3];
-            box.children[6].innerHTML = s;
+    layui.use(['carousel'], function () {
+        var carousel = layui.carousel;
+        //建造实例
+        carousel.render({
+            elem: '#test1'
+            , width: '100%' //设置容器宽度
+            , height: '520px',
+            arrow: 'hover' //始终显示箭头
+            , anim: 'fade' //切换动画方式
         });
     });
 </script>
