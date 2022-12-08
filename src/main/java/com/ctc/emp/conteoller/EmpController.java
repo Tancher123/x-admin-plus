@@ -82,7 +82,7 @@ public class EmpController {
     public Result<Object> updateEmp (Emp emp , HttpServletRequest request) {
         Object loginChName = request.getSession ( ).getAttribute ( "loginChName" );
 
-        if ( loginChName.equals ( "普通用户" ) || loginChName == "普通用户" ) {
+        if ( loginChName.equals ( "普通用户" ) ) {
             return Result.fail ( "您没权限，请联系管理员！" );
         }
 
@@ -100,8 +100,6 @@ public class EmpController {
     //恢复员工
     @PutMapping("/recover/{ids}")
     public Result<Object> updateEmpDeleted (@PathVariable("ids") List ids , HttpServletRequest request){
-        Object loginUsername = request.getSession ( ).getAttribute ( "loginUsername" );
-        
         int i = empService.updateEmpDeleted ( ids );
         if ( i > 0 ) {
             return Result.success ( "员工信息恢复成功！" );
@@ -114,7 +112,7 @@ public class EmpController {
     public Result<Object> deleteEmpDelByIds (@PathVariable("ids") int[] ids ,
                                              HttpServletRequest request) {
         Object loginChName = request.getSession ( ).getAttribute ( "loginChName" );
-        if ( loginChName.equals ( "普通用户" ) || loginChName == "普通用户" ) {
+        if ( loginChName.equals ( "普通用户" )) {
             return Result.fail ( "您没权限，请联系管理员！" );
         }
         int i = empService.deleteEmpDelByIds ( ids );

@@ -33,7 +33,6 @@ public class UserController {
 
     @Autowired
     private EmailUtils emailUtils;
-
     /**
      * @param user:
      * @param captcha:
@@ -105,6 +104,7 @@ public class UserController {
         if ( user.getUsername ( ).contains ( "sb" ) ||
                 user.getUsername ( ).contains ( "cnm" ) ||
                 user.getUsername ( ).contains ( "cb" ) ||
+                user.getUsername ( ).contains ( "ctc" ) ||
                 user.getUsername ( ).contains ( "2b" ) ) {
             return Result.fail ( "用户名不能出现敏感词汇！" );
         }

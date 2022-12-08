@@ -273,9 +273,11 @@
             } else if (layEvent == 'upd') {
 
                 layer.confirm('确认恢复姓名为：' + data.name + ' 的员工？', {icon: 3, title: '操作警告'}, function (index) {
-                    if (data.userName != userName) {
-                        layer.alert('不能恢复他人删除的数据', {icon: 2, anim: 6});
-                        return;
+                    if (loginChName != '管理员') {
+                        if (data.userName != userName) {
+                            layer.alert('不能恢复他人删除的数据', {icon: 2, anim: 6});
+                            return;
+                        }
                     }
                     var url = ctxPath + 'emp/recover/' + data.empId;
                     var params = {
