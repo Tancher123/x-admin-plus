@@ -82,10 +82,6 @@ public class EmpServiceImpl implements EmpService {
      */
     @Override
     public int deleteEmpByIds (List<Integer> ids) {
-//        List<Integer> idList = new ArrayList ( );
-//        for (int i = 0; i < ids.length; i++) {
-//            idList.add ( ids[i] );
-//        }
         int i = empMapper.deleteBatchIds ( ids );
         return i;
     }

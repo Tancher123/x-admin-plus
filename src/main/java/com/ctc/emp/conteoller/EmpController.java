@@ -32,6 +32,13 @@ public class EmpController {
     //分页查询，模糊查询
     @GetMapping("/list")
     public Result<Object> getEmpList (EmpQuery params) {
+        if ( params.getName ()==null ){
+            params.setName ( "" );
+        }else {
+            String name = params.getName ( );
+            name = '%' + name + '%';
+            params.setName ( name );
+        }
         List<Emp> list = empService.getEmpList ( params );//分页查询所有员工信息
         Long count = empService.countEmpList ( params );//总条数
         return Result.success ( list , count );
@@ -40,6 +47,13 @@ public class EmpController {
     //分页查询被删除的员工信息
     @GetMapping("/deleted")
     public Result<Object> getEmpDeleted (EmpQuery params) {
+        if ( params.getName ()==null ){
+            params.setName ( "" );
+        }else {
+            String name = params.getName ( );
+            name = '%' + name + '%';
+            params.setName ( name );
+        }
         List<Emp> list = empService.selectEmpByDeleted ( params );//分页查询所有员工信息
         Long count = empService.countEmpListDeleted ( params );//总条数
         return Result.success ( list , count );
@@ -70,7 +84,7 @@ public class EmpController {
 
         int i = empService.deleteEmpByIds ( ids );
         int username = empService.updateEmpUsernameByIds ( ids , (String) loginUsername );
-        if ( i > 0 && username>0) {
+        if ( i > 0 && username > 0 ) {
             return Result.success ( "删除成功！" );
         }
         return Result.fail ( "删除失败！" );
@@ -99,7 +113,7 @@ public class EmpController {
 
     //恢复员工
     @PutMapping("/recover/{ids}")
-    public Result<Object> updateEmpDeleted (@PathVariable("ids") List<Integer> ids){
+    public Result<Object> updateEmpDeleted (@PathVariable("ids") List<Integer> ids) {
         int i = empService.updateEmpDeleted ( ids );
         if ( i > 0 ) {
             return Result.success ( "员工信息恢复成功！" );
@@ -112,7 +126,7 @@ public class EmpController {
     public Result<Object> deleteEmpDelByIds (@PathVariable("ids") int[] ids ,
                                              HttpServletRequest request) {
         Object loginChName = request.getSession ( ).getAttribute ( "loginChName" );
-        if ( loginChName.equals ( "普通用户" )) {
+        if ( loginChName.equals ( "普通用户" ) ) {
             return Result.fail ( "您没权限，请联系管理员！" );
         }
         int i = empService.deleteEmpDelByIds ( ids );
