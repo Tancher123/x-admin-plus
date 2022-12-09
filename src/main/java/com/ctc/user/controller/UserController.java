@@ -16,6 +16,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @program: x-admin-plus
@@ -33,6 +35,7 @@ public class UserController {
 
     @Autowired
     private EmailUtils emailUtils;
+
     /**
      * @param user:
      * @param captcha:
@@ -137,7 +140,9 @@ public class UserController {
         if ( !emailCode.equals ( "修改信息" ) ) {
             int code = (int) request.getSession ( ).getAttribute ( "emailCode" );
             System.out.println ( code );
-            if ( emailCode.length ( ) != 6 ) {
+            Pattern pattern = Pattern.compile ( "^\\d{6}$" );
+            Matcher isNum = pattern.matcher ( emailCode );
+            if ( !isNum.matches ( ) ) {
                 return Result.fail ( "验证码格式有误！" );
             }
             int emailCode1 = Integer.parseInt ( emailCode );
@@ -147,21 +152,16 @@ public class UserController {
             if ( code != emailCode1 ) {
                 return Result.fail ( "验证码不正确！" );
             }
-            String email = user.getEmail ( );
-            String card = user.getCard ( );
-            String number = user.getNumber ( );
-            User userByCard = userService.selectUserByCard ( card );
-            if ( userByCard != null ) {
-                return Result.fail ( "该身份证已存在，请确认后再输入！" );
-            }
-            User userByNumber = userService.selectUserByNumber ( number );
-            if ( userByNumber != null ) {
-                return Result.fail ( "该手机号码已存在，请确认后再输入！" );
-            }
-            User userByEmail = userService.selectUserByEmail ( email );
-            if ( userByEmail != null ) {
-                return Result.fail ( "该邮箱已存在，请确认后再输入！" );
-            }
+        }
+        String card = user.getCard ( );
+        String number = user.getNumber ( );
+        User userByCard = userService.selectUserByCard ( card );
+        if ( userByCard != null && !user.getId ( ).equals ( userByCard.getId ( ) ) ) {
+            return Result.fail ( "该身份证已存在，请确认后再输入！" );
+        }
+        User userByNumber = userService.selectUserByNumber ( number );
+        if ( userByNumber != null && !user.getId ( ).equals ( userByNumber.getId ( ) ) ) {
+            return Result.fail ( "该手机号码已存在，请确认后再输入！" );
         }
         Integer age = user.getAge ( );
         if ( age > 120 || age < 0 ) {
@@ -180,7 +180,6 @@ public class UserController {
                                        @RequestParam("old_email") String old_email
             , HttpServletRequest request) {
         Object id = request.getSession ( ).getAttribute ( "userId" );
-
         User user = userService.selectUserById ( (Integer) id );
         if ( !user.getEmail ( ).equals ( old_email ) ) {
             //不一样
@@ -208,6 +207,10 @@ public class UserController {
                                         @RequestParam("msg") String msg
             , HttpServletRequest request
             , HttpSession session) throws MessagingException {
+        User userByEmail = userService.selectUserByEmail ( email );
+        if ( userByEmail != null ) {
+            return Result.fail ( "该邮箱已存在，请确认后再输入！" );
+        }
         if ( msg.equals ( "账号注销" ) ) {
             //获取用户id
             int userId = (int) request.getSession ( ).getAttribute ( "userId" );

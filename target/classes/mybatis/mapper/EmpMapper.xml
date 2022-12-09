@@ -25,7 +25,7 @@
     <sql id="getEmpListWhere">
         <where>
             <if test="name != null and name != ''">
-                name like '%' #{name} '%'
+                name like #{name}
             </if>
             <if test="startDate != null">
                 <![CDATA[
@@ -43,7 +43,7 @@
     <sql id="getEmpListWhereDeleted">
         <where>
             <if test="name != null and name != ''">
-                name like '%' #{name} '%'
+                name like #{name}
             </if>
             <if test="startDate != null">
                 <![CDATA[

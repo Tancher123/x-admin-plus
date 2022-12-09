@@ -21,12 +21,13 @@
             padding: 10px 20px 5px 20px;
             color: #6b6b6b;
         }
-        .layui-btn .layui-icon{
-            padding: 0!important;
+
+        .layui-btn .layui-icon {
+            padding: 0 !important;
         }
     </style>
 </head>
-<body onload="opener.location.reload()">
+<body>
 <div class="div-content">
     <form class="layui-form layui-form-pane">
         <fieldset class="table-search-fieldset">
@@ -183,8 +184,8 @@
                         , {field: 'sal', title: '工资', width: 100, sort: true, align: 'right'}
                         , {field: 'dept', title: '部门', width: 100, align: 'center', templet: "#convertDept"}
                         , {field: 'birthday', title: '生日', width: 120, align: 'center'}
-                        , {field: 'address', title: '家庭地址' }
-                        , {title:'操作',width: 180,toolbar: '#col-emp-toolbar', align: 'center'}
+                        , {field: 'address', title: '家庭地址'}
+                        , {title: '操作', width: 180, toolbar: '#col-emp-toolbar', align: 'center'}
                     ]]
             });
 
@@ -206,13 +207,13 @@
             });
 
             //监听操作列
-            table.on('tool(table-emp-filter)', function(obj){ //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            table.on('tool(table-emp-filter)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
                 var data = obj.data; //获得当前行数据
                 var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
 
-                if (layEvent == 'del'){
+                if (layEvent == 'del') {
                     //异步请求删除数据
-                    layer.confirm('确认删除姓名为：'+ data.name +' 的员工？', {icon: 3, title: '操作警告'}, function (index) {
+                    layer.confirm('确认删除姓名为：' + data.name + ' 的员工？', {icon: 3, title: '操作警告'}, function (index) {
                         var url = ctxPath + 'emp/' + data.empId;
                         var params = {
                             _method: "DELETE"
@@ -232,20 +233,18 @@
                         layer.close(index);
                     });
 
-                }else  if (layEvent == 'update'){
+                } else if (layEvent == 'update') {
                     layer.open({
                         type: 2,
                         title: "编辑员工信息",
                         area: ['80%', '95%'],
-                        content: ctxPath + 'emp/' +data.empId
+                        content: ctxPath + 'emp/' + data.empId
                     });
                 }
 
 
             });
         });
-
-
 </script>
 </body>
 </html>
