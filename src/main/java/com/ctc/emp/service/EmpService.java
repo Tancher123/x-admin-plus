@@ -50,7 +50,7 @@ public interface EmpService {
      * @description 根据id批量删除
      * @date 2022/11/30 21:27
      */
-    int deleteEmpByIds (int[] ids);
+    int deleteEmpByIds (List<Integer> ids);
 
     /**
      * @param emp:
@@ -95,7 +95,7 @@ public interface EmpService {
      * @description 通过id修改
      * @date 2022/12/1 9:27
      */
-    int updateEmpDeleted (List ids);
+    int updateEmpDeleted (List<Integer> ids);
 
     /**
      * @param ids:
@@ -114,6 +114,6 @@ public interface EmpService {
      * @description 存入操作删除的用户名
      * @date 2022/12/1 13:27
      */
-    int updateEmpUsernameByIds (int[] ids , String userName);
+    int updateEmpUsernameByIds (List<Integer> ids , String userName);
 
 }

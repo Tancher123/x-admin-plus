@@ -53,7 +53,7 @@ public interface EmpMapper extends BaseMapper<Emp> {
      * @description 通过id修改
      * @date 2022/12/1 9:27
      */
-    int updateEmpDeleted(List ids);
+    int updateEmpDeleted(List<Integer> ids);
 
     /**
      * @param ids:
@@ -72,5 +72,5 @@ public interface EmpMapper extends BaseMapper<Emp> {
      * @description 存入操作删除的用户名
      * @date 2022/12/1 13:27
      */
-    int updateEmpUsernameByIds (int[] ids , String userName);
+    int updateEmpUsernameByIds (List<Integer> ids , String userName);
 }

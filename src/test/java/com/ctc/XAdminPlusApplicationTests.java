@@ -118,12 +118,6 @@ class XAdminPlusApplicationTests {
         int insert = empService.insertEmp (emp );
         System.out.println (insert );
     }
- @Test
-    void deleted(){
-        int[] ids = {43,44};
-     int insert = empService.deleteEmpByIds ( ids);
-        System.out.println (insert);
-    }
 
 
 }

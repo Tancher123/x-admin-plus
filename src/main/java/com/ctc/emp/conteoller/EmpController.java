@@ -65,7 +65,7 @@ public class EmpController {
     //删
     //批量删除员工
     @DeleteMapping("/{ids}")
-    public Result<Object> deleteEmpByIds (@PathVariable("ids") int[] ids , HttpServletRequest request) {
+    public Result<Object> deleteEmpByIds (@PathVariable("ids") List<Integer> ids , HttpServletRequest request) {
         Object loginUsername = request.getSession ( ).getAttribute ( "loginUsername" );
 
         int i = empService.deleteEmpByIds ( ids );
@@ -99,7 +99,7 @@ public class EmpController {
 
     //恢复员工
     @PutMapping("/recover/{ids}")
-    public Result<Object> updateEmpDeleted (@PathVariable("ids") List ids , HttpServletRequest request){
+    public Result<Object> updateEmpDeleted (@PathVariable("ids") List<Integer> ids){
         int i = empService.updateEmpDeleted ( ids );
         if ( i > 0 ) {
             return Result.success ( "员工信息恢复成功！" );

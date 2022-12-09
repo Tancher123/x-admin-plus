@@ -81,12 +81,12 @@ public class EmpServiceImpl implements EmpService {
      * @date 2022/11/30 21:27
      */
     @Override
-    public int deleteEmpByIds (int[] ids) {
-        List<Integer> idList = new ArrayList ( );
-        for (int i = 0; i < ids.length; i++) {
-            idList.add ( ids[i] );
-        }
-        int i = empMapper.deleteBatchIds ( idList );
+    public int deleteEmpByIds (List<Integer> ids) {
+//        List<Integer> idList = new ArrayList ( );
+//        for (int i = 0; i < ids.length; i++) {
+//            idList.add ( ids[i] );
+//        }
+        int i = empMapper.deleteBatchIds ( ids );
         return i;
     }
     /**
@@ -144,7 +144,7 @@ public class EmpServiceImpl implements EmpService {
      * @date 2022/12/1 9:27
      */
     @Override
-    public int updateEmpDeleted (List ids) {
+    public int updateEmpDeleted (List<Integer> ids) {
         int i = empMapper.updateEmpDeleted ( ids );
         return i;
     }
@@ -162,7 +162,7 @@ public class EmpServiceImpl implements EmpService {
     }
 
     @Override
-    public int updateEmpUsernameByIds (int[] ids , String username) {
+    public int updateEmpUsernameByIds (List<Integer> ids , String username) {
         int i = empMapper.updateEmpUsernameByIds ( ids , username );
         return i;
     }
