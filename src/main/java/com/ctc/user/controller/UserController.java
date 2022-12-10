@@ -207,10 +207,6 @@ public class UserController {
                                         @RequestParam("msg") String msg
             , HttpServletRequest request
             , HttpSession session) throws MessagingException {
-        User userByEmail = userService.selectUserByEmail ( email );
-        if ( userByEmail != null ) {
-            return Result.fail ( "该邮箱已存在，请确认后再输入！" );
-        }
         if ( msg.equals ( "账号注销" ) ) {
             //获取用户id
             int userId = (int) request.getSession ( ).getAttribute ( "userId" );
@@ -225,6 +221,10 @@ public class UserController {
             }
             return Result.fail ( "您的邮箱和该账号绑定的邮箱不匹配，获取失败" );
         } else if ( msg.equals ( "账号绑定" ) ) {
+            User userByEmail = userService.selectUserByEmail ( email );
+            if ( userByEmail != null ) {
+                return Result.fail ( "该邮箱已存在，请确认后再输入！" );
+            }
             int i = emailUtils.email ( msg , email );
             session.setAttribute ( "emailCode" , i );
             session.setMaxInactiveInterval ( 600 );
