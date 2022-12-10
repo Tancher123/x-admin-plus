@@ -183,10 +183,10 @@ public class UserController {
         User user = userService.selectUserById ( (Integer) id );
         if ( !user.getEmail ( ).equals ( old_email ) ) {
             //不一样
-            return Result.fail ( "完整邮箱错误" );
+            return Result.fail ( "当前完整邮箱错误" );
         }
         User userByEmail = userService.selectUserByEmail ( email );
-        if ( userByEmail != null ) {
+        if ( userByEmail != null && userByEmail.getEmail ( ).equals ( email ) ) {
             return Result.fail ( "该邮箱已存在！" );
         }
         User userEmail = new User ( );
@@ -204,7 +204,8 @@ public class UserController {
     //获取邮箱验证码
     @PostMapping("/email")
     public Result<Object> getEmailCode (@RequestParam("email") String email ,
-                                        @RequestParam("msg") String msg
+                                        @RequestParam("msg") String msg ,
+                                        @RequestParam("username") String username
             , HttpServletRequest request
             , HttpSession session) throws MessagingException {
         if ( msg.equals ( "账号注销" ) ) {
@@ -230,6 +231,17 @@ public class UserController {
             session.setMaxInactiveInterval ( 600 );
             return Result.success ( "获取成功" );
         } else if ( msg.equals ( "密码找回" ) ) {
+            User user = userService.selectUserByUsername ( username );
+            if ( user == null ) {
+                return Result.fail ( "账号不存在" );
+            }
+
+            if ( user.getEmail ( ) == null ) {
+                return Result.fail ( "您的账号未绑定邮箱，找回失败，请联系管理员" );
+            }
+            if ( !user.getEmail ( ).equals ( email ) ) {
+                return Result.fail ( "您的账号和绑定的邮箱不匹配，找回失败！" );
+            }
             int i = emailUtils.email ( msg , email );
             session.setAttribute ( "emailCode" , i );
             session.setMaxInactiveInterval ( 600 );
@@ -290,7 +302,7 @@ public class UserController {
 
         int i = userService.updateUser ( user );
         if ( i > 0 ) {
-            return Result.success ( "密码修改成功重新登录" );
+            return Result.success ( "密码修改成功，请重新登录" );
         }
         return Result.fail ( "密码修改失败" );
     }
